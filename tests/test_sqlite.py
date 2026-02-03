@@ -1,0 +1,43 @@
+import logging
+import os
+import time
+import unittest
+
+from sqlalchemy import select
+
+from sqldb_logging.handlers import SQLHandler
+
+
+class TestSQLite(unittest.TestCase):
+
+    def test_sqlite(self):
+        start_time = time.time()
+        handler = SQLHandler(
+            table='log_table',
+            drivername='sqlite',
+            database=os.path.join(os.path.dirname(__file__), 'resources', 'sqlite.db'),
+            buffer_size=10,
+            flush_level=logging.CRITICAL
+        )
+        logger = logging.getLogger(self.__class__.__name__)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(handler)
+        logger.debug('This is a %s message', logging.getLevelName(logging.DEBUG), stack_info=True)
+        logger.info('This is an %s message', logging.getLevelName(logging.INFO), stack_info=True)
+        logger.warning('This is a %s message', logging.getLevelName(logging.WARNING), stack_info=True)
+        logger.error('This is an %s message', logging.getLevelName(logging.ERROR), stack_info=True)
+        try:
+            1 / 0
+        except ZeroDivisionError as error:
+            logger.exception(error, stack_info=True)
+        logger.critical('This is a %s message', logging.getLevelName(logging.CRITICAL), stack_info=True)
+        end_time = time.time()
+        stmt = select(handler.log_table) \
+            .where(handler.log_table.c['created'] > start_time) \
+            .where(handler.log_table.c['created'] < end_time)
+        with handler.engine.connect() as conn:
+            self.assertEqual(len(conn.execute(stmt).fetchall()), 6)
+
+
+if __name__ == '__main__':
+    unittest.main()
