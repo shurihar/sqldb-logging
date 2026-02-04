@@ -1,21 +1,20 @@
 import logging
 import os
 import time
-import unittest
 
 from sqlalchemy import select
 
 from sqldb_logging.handlers import SQLHandler
 
 
-class TestSQLite(unittest.TestCase):
+class TestSQLite:
 
-    def test_sqlite(self):
+    def test_sqlite(self, tmp_path):
         start_time = time.time()
         handler = SQLHandler(
             table='log_table',
             drivername='sqlite',
-            database=os.path.join(os.path.dirname(__file__), 'resources', 'sqlite.db'),
+            database=os.path.join(tmp_path, 'sqlite.db'),
             buffer_size=10,
             flush_level=logging.CRITICAL
         )
@@ -36,8 +35,4 @@ class TestSQLite(unittest.TestCase):
             .where(handler.log_table.c['created'] > start_time) \
             .where(handler.log_table.c['created'] < end_time)
         with handler.engine.connect() as conn:
-            self.assertEqual(len(conn.execute(stmt).fetchall()), 6)
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert len(conn.execute(stmt).fetchall()) == 6

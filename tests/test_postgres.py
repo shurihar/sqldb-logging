@@ -1,14 +1,13 @@
 import logging
 import os
 import time
-import unittest
 
 from sqlalchemy import select
 
 from sqldb_logging.handlers import SQLHandler
 
 
-class TestPostgres(unittest.TestCase):
+class TestPostgres:
 
     def test_postgres(self):
         start_time = time.time()
@@ -41,8 +40,4 @@ class TestPostgres(unittest.TestCase):
             .where(handler.log_table.c['created'] > start_time) \
             .where(handler.log_table.c['created'] < end_time)
         with handler.engine.connect() as conn:
-            self.assertEqual(len(conn.execute(stmt).fetchall()), 6)
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert len(conn.execute(stmt).fetchall()) == 6
