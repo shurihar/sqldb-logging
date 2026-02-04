@@ -26,6 +26,28 @@ class SQLHandler(MemoryHandler):
     A handler class which buffers logging records in memory, periodically
     flushing them to a database table using SQLAlchemy. Flushing occurs whenever the buffer
     is full, or when an event of a certain severity or greater is seen.
+    :param table: The name of the database table where to write logs.
+    :param drivername: the name of the database backend. This name will
+        correspond to a module in sqlalchemy/databases or a third party
+        plug-in.
+    :param username: The user name.
+    :param password: database password.  Is typically a string, but may
+        also be an object that can be stringified with ``str()``.
+    :param host: The name of the host.
+    :param port: The port number.
+    :param database: The database name.
+    :param schema: The schema name for the log table, which is required if
+        the table resides in a schema other than the default selected schema
+        for the engine's database connection.  Defaults to ``None``.
+    :param buffer_size: The number of records to buffer in memory before flushing to the database.
+        The default is 1, which means that each record is flushed immediately.
+        Setting this parameter to a higher value reduces the number of round trips to the database, but requires
+        calling flush() or close() method before exiting the program to flush all pending records to the database.
+        It may also result in the loss of buffered records if the program terminates unexpectedly.
+        Using the with statement when instantiating the handler can help avoid this problem.
+    :param flush_level: the level at which flushing should occur.
+    :param kwargs: takes a wide variety of options which are routed towards their appropriate components.
+        For more information, see https://docs.sqlalchemy.org/en/20/core/engines.html#sqlalchemy.create_engine
     """
 
     def __init__(
@@ -42,30 +64,6 @@ class SQLHandler(MemoryHandler):
             flush_level: int = logging.ERROR,
             **kwargs: Any
     ):
-        """
-        :param table: The name of the database table where to write logs.
-        :param drivername: the name of the database backend. This name will
-            correspond to a module in sqlalchemy/databases or a third party
-            plug-in.
-        :param username: The user name.
-        :param password: database password.  Is typically a string, but may
-            also be an object that can be stringified with ``str()``.
-        :param host: The name of the host.
-        :param port: The port number.
-        :param database: The database name.
-        :param schema: The schema name for the log table, which is required if
-            the table resides in a schema other than the default selected schema
-            for the engine's database connection.  Defaults to ``None``.
-        :param buffer_size: The number of records to buffer in memory before flushing to the database.
-            The default is 1, which means that each record is flushed immediately.
-            Setting this parameter to a higher value reduces the number of round trips to the database, but requires
-            calling flush() or close() method before exiting the program to flush all pending records to the database.
-            It may also result in the loss of buffered records if the program terminates unexpectedly.
-            Using the with statement when instantiating the handler can help avoid this problem.
-        :param flush_level: the level at which flushing should occur.
-        :param kwargs: takes a wide variety of options which are routed towards their appropriate components.
-            For more information, see https://docs.sqlalchemy.org/en/20/core/engines.html#sqlalchemy.create_engine
-        """
         super().__init__(buffer_size, flush_level)
         url = URL.create(
             drivername=drivername,
