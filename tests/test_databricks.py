@@ -8,21 +8,24 @@ from sqlalchemy import select
 from sqldb_logging.handlers import SQLHandler
 
 
-class TestPostgres:
+class TestDatabricks:
 
-    def test_postgres(self):
+    def test_databricks(self):
         start_time = time.time()
+        print(start_time)
         handler = SQLHandler(
             table='log_table',
-            drivername='postgresql+psycopg',
-            username='postgres',
-            password=os.getenv('POSTGRES_PASSWORD'),
-            host='localhost',
-            port=5432,
-            database='postgres',
-            schema='public',
-            buffer_size=10,
+            drivername='databricks',
+            username='token',
+            password=os.getenv('DATABRICKS_TOKEN'),
+            host=os.getenv('DATABRICKS_SERVER_HOSTNAME'),
+            buffer_size=10,  # this doesn't seem to work with Databricks (each record is committed in a separate txn)
             flush_level=logging.CRITICAL,
+            connect_args={
+                'http_path': os.getenv('DATABRICKS_HTTP_PATH'),
+                'catalog': 'workspace',
+                'schema': 'default'
+            },
             echo=True
         )
         logger = logging.getLogger(self.__class__.__name__)

@@ -13,6 +13,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment:
+      name: test
     strategy:
       fail-fast: false
       matrix:
@@ -37,4 +39,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest tests/test_sqlite.py
+        pytest -k "test_databricks or test_sqlite"

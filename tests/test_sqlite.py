@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from decimal import Decimal
 
 from sqlalchemy import select
 
@@ -16,7 +17,8 @@ class TestSQLite:
             drivername='sqlite',
             database=os.path.join(tmp_path, 'sqlite.db'),
             buffer_size=10,
-            flush_level=logging.CRITICAL
+            flush_level=logging.CRITICAL,
+            echo=True
         )
         logger = logging.getLogger(self.__class__.__name__)
         logger.setLevel(logging.DEBUG)
@@ -32,7 +34,7 @@ class TestSQLite:
         logger.critical('This is a %s message', logging.getLevelName(logging.CRITICAL), stack_info=True)
         end_time = time.time()
         stmt = select(handler.log_table) \
-            .where(handler.log_table.c['created'] > start_time) \
-            .where(handler.log_table.c['created'] < end_time)
+            .where(handler.log_table.c['created'] > Decimal(str(start_time))) \
+            .where(handler.log_table.c['created'] < Decimal(str(end_time)))
         with handler.engine.connect() as conn:
             assert len(conn.execute(stmt).fetchall()) == 6
