@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from decimal import Decimal
 
 from sqlalchemy import select
 
@@ -20,7 +21,8 @@ class TestMySQL:
             port=3306,
             database='mysqldb',
             buffer_size=10,
-            flush_level=logging.CRITICAL
+            flush_level=logging.CRITICAL,
+            echo=True
         )
         logger = logging.getLogger(self.__class__.__name__)
         logger.setLevel(logging.DEBUG)
@@ -36,7 +38,7 @@ class TestMySQL:
         logger.critical('This is a %s message', logging.getLevelName(logging.CRITICAL), stack_info=True)
         end_time = time.time()
         stmt = select(handler.log_table) \
-            .where(handler.log_table.c['created'] > start_time) \
-            .where(handler.log_table.c['created'] < end_time)
+            .where(handler.log_table.c['created'] > Decimal(str(start_time))) \
+            .where(handler.log_table.c['created'] < Decimal(str(end_time)))
         with handler.engine.connect() as conn:
             assert len(conn.execute(stmt).fetchall()) == 6

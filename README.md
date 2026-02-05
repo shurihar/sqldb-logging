@@ -36,4 +36,5 @@ In theory, any database supported by SQLAlchemy should work. The following datab
 - MySQL
 - PostgreSQL
 - SQLite
+- Databricks
 

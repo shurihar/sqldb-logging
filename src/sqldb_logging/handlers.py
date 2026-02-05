@@ -1,6 +1,7 @@
 import logging
 import traceback
 from datetime import datetime
+from decimal import Decimal
 from logging.handlers import MemoryHandler
 from typing import Any
 
@@ -11,9 +12,8 @@ from sqlalchemy import (
     Table,
     Column,
     DateTime,
-    Double,
+    Numeric,
     Text,
-    String,
     SmallInteger,
     Integer,
     BigInteger,
@@ -79,27 +79,35 @@ class SQLHandler(MemoryHandler):
             table,
             metadata,
             Column('asctime', DateTime, nullable=False),
-            Column('created', Double, nullable=False),
+            Column('created', Numeric(16, 6), nullable=False),  # microsecond precision
             Column('exc_info', Text),
             Column('filename', Text),
             Column('func_name', Text),
-            Column('levelname', String(8), nullable=False),
-            Column('levelno', SmallInteger, nullable=False),
+            # To support custom logging levels, use the Text data type for this column.
+            Column('levelname', Text, nullable=False),
+            # To support custom logging levels, use the BigInteger data type for this column.
+            Column('levelno', BigInteger, nullable=False),
             Column('lineno', Integer),
             Column('message', Text, nullable=False),
             Column('module_name', Text),
-            Column('msecs', Double, nullable=False),
+            Column('msecs', SmallInteger, nullable=False),  # possible range: 0-999
             Column('logger_name', Text, nullable=False),
             Column('pathname', Text),
             Column('process_id', BigInteger),
             Column('process_name', Text),
-            Column('relative_created', Double, nullable=False),
+            Column('relative_created', BigInteger, nullable=False),
             Column('stack_info', Text),
             Column('thread_id', BigInteger),
             Column('thread_name', Text),
             schema=schema
         )
-        metadata.create_all(self.engine)
+        # Check for the table's existence using a dummy SELECT query,
+        # as the create_all method never checks for this in Databricks, even if the checkfirst parameter is True.
+        try:
+            with self.engine.connect() as conn:
+                conn.exec_driver_sql(f"SELECT 1 FROM {self.log_table.fullname} WHERE 1=0")
+        except Exception as e:
+            metadata.create_all(self.engine)
 
     def __enter__(self):
         return self
@@ -120,7 +128,7 @@ class SQLHandler(MemoryHandler):
                     parameters.append(
                         {
                             'asctime': datetime.fromtimestamp(record.created),
-                            'created': record.created,
+                            'created': Decimal(str(record.created)),
                             'exc_info': exc_info,
                             'filename': record.filename,
                             'func_name': record.funcName,
@@ -129,12 +137,12 @@ class SQLHandler(MemoryHandler):
                             'lineno': record.lineno,
                             'message': str(record.msg) % record.args,
                             'module_name': record.module,
-                            'msecs': record.msecs,
+                            'msecs': int(record.msecs),
                             'logger_name': record.name,
                             'pathname': record.pathname,
                             'process_id': record.process,
                             'process_name': record.processName,
-                            'relative_created': record.relativeCreated,
+                            'relative_created': int(record.relativeCreated),
                             'stack_info': record.stack_info,
                             'thread_id': record.thread,
                             'thread_name': record.threadName
