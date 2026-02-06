@@ -5,8 +5,8 @@ SQLite Logging Tests.
 import logging
 import os
 
-from tests.common_functions import run_logger
 from sqldb_logging.handlers import SQLHandler
+from .common_functions import run_logger
 
 
 def test_sqlite(tmp_path):

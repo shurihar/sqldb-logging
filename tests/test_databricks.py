@@ -6,8 +6,8 @@ import logging
 import os
 import sys
 
-from tests.common_functions import run_logger
 from sqldb_logging.handlers import SQLHandler
+from .common_functions import run_logger
 
 
 def test_databricks():
