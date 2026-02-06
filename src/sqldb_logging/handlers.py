@@ -1,3 +1,7 @@
+"""
+Additional handlers for the Python logging package.
+"""
+
 import logging
 import traceback
 from datetime import datetime
