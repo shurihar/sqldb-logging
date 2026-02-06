@@ -8,11 +8,15 @@ An extension to the Python logging library that allows logging to SQL databases 
 
 Basic installation:
 
-`pip install sqldb-logging`
+```shell
+pip install sqldb-logging
+```
 
 Installation with optional dependencies:
 
-`pip install sqldb-logging[databricks]`
+```shell
+pip install sqldb-logging[databricks]
+```
 
 ## Usage
 
