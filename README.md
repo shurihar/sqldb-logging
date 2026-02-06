@@ -1,8 +1,18 @@
 # sqldb-logging
 An extension to the Python logging library that allows logging to SQL databases using [SQLAlchemy](https://www.sqlalchemy.org/)
 
+## Requirements
+- Python version 3.11 or later
+
 ## Installation
+
+Basic installation:
+
 `pip install sqldb-logging`
+
+Installation with optional dependencies:
+
+`pip install sqldb-logging[databricks]`
 
 ## Usage
 

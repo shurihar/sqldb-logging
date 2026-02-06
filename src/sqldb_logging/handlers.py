@@ -101,12 +101,14 @@ class SQLHandler(MemoryHandler):
             Column('thread_name', Text),
             schema=schema
         )
-        # Check for the table's existence using a dummy SELECT query,
-        # as the create_all method never checks for this in Databricks, even if the checkfirst parameter is True.
-        try:
+        table_exists = False
+        if drivername == 'databricks':
+            # Checking for table existence is done manually using the information schema,
+            # as the create_all method never checks for this in Databricks, even if the checkfirst parameter is True.
+            stmt = 'select * from information_schema.tables where table_name = ?'
             with self.engine.connect() as conn:
-                conn.exec_driver_sql(f"SELECT 1 FROM {self.log_table.fullname} WHERE 1=0")
-        except Exception as e:
+                table_exists = conn.exec_driver_sql(stmt, (table,)).fetchone() is not None
+        if not table_exists:
             metadata.create_all(self.engine)
 
     def __enter__(self):

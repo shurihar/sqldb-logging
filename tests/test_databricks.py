@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import time
 from decimal import Decimal
 
@@ -14,7 +15,7 @@ class TestDatabricks:
         start_time = time.time()
         print(start_time)
         handler = SQLHandler(
-            table='log_table',
+            table=f'log_table_py_{sys.version_info.major}_{sys.version_info.minor}',
             drivername='databricks',
             username='token',
             password=os.getenv('DATABRICKS_TOKEN'),
