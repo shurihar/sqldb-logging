@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sqldb-logging"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
     "SQLAlchemy>=2.0.46",
 ]
@@ -31,6 +31,9 @@ classifiers = [
 
 [project.optional-dependencies]
 databricks = ["databricks-sqlalchemy>=2.0.8"]
+mssql = ["pyodbc>=5.3.0"]
+mysql = ["mysqlclient>=2.2.7"]
+postgresql = ["psycopg>=3.2.4"]
 
 [project.urls]
 Repository = "https://github.com/shurihar/sqldb-logging"
