@@ -83,7 +83,7 @@ class SQLHandler(MemoryHandler):
             table,
             metadata,
             Column('asctime', DateTime, nullable=False),
-            Column('created', Numeric(16, 6), nullable=False),  # microsecond precision
+            Column('created', Numeric(17, 7), nullable=False),
             Column('exc_info', Text),
             Column('filename', Text),
             Column('func_name', Text),

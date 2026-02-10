@@ -51,4 +51,4 @@ In theory, any database supported by SQLAlchemy should work. The following datab
 - PostgreSQL
 - SQLite
 - Databricks
-
+- Microsoft SQL Server

@@ -10,9 +10,9 @@ from sqlalchemy import select
 from sqldb_logging.handlers import SQLHandler
 
 
-def run_logger(name: str, handler: SQLHandler):
+def run_logger(name: str, handler: SQLHandler) -> int:
     """Creates a logger with the given name and handler, writes messages to the database specified by the handler,
-    and then checks for their presence in the database."""
+    and returns the number of records inserted into the log table."""
     start_time = time.time()
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
@@ -28,7 +28,7 @@ def run_logger(name: str, handler: SQLHandler):
     logger.critical('This is a %s message', logging.getLevelName(logging.CRITICAL), stack_info=True)
     end_time = time.time()
     stmt = select(handler.log_table) \
-        .where(handler.log_table.c['created'] > Decimal(str(start_time))) \
+        .where(handler.log_table.c['created'] >= Decimal(str(start_time))) \
         .where(handler.log_table.c['created'] < Decimal(str(end_time)))
     with handler.engine.connect() as conn:
-        assert len(conn.execute(stmt).fetchall()) == 6
+        return len(conn.execute(stmt).fetchall())
