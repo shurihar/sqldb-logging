@@ -27,4 +27,5 @@ def test_databricks():
         },
         echo=True
     )
-    run_logger(__name__, handler)
+    rowcount = run_logger(__name__, handler)
+    assert rowcount == 6

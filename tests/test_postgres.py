@@ -24,4 +24,5 @@ def test_postgres():
         flush_level=logging.CRITICAL,
         echo=True
     )
-    run_logger(__name__, handler)
+    rowcount = run_logger(__name__, handler)
+    assert rowcount == 6

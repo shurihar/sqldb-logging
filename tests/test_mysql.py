@@ -15,7 +15,7 @@ def test_mysql():
         table='log_table',
         drivername='mysql+mysqldb',
         username='root',
-        password=os.getenv('MYSQL_PASSWORD'),
+        password=os.getenv('MYSQL_ROOT_PASSWORD'),
         host='localhost',
         port=3306,
         database='mysqldb',
@@ -23,4 +23,5 @@ def test_mysql():
         flush_level=logging.CRITICAL,
         echo=True
     )
-    run_logger(__name__, handler)
+    rowcount = run_logger(__name__, handler)
+    assert rowcount == 6
