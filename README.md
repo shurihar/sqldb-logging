@@ -15,7 +15,7 @@ pip install sqldb-logging
 Installation with optional dependencies:
 
 ```shell
-pip install sqldb-logging[databricks]
+pip install sqldb-logging[databricks,mssql,mysql,postgresql]
 ```
 
 ## Usage
