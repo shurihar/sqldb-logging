@@ -82,27 +82,112 @@ class SQLHandler(MemoryHandler):
         self.log_table = Table(
             table,
             metadata,
-            Column('asctime', DateTime, nullable=False),
-            Column('created', Numeric(17, 7), nullable=False),
-            Column('exc_info', Text),
-            Column('filename', Text),
-            Column('func_name', Text),
-            # To support custom logging levels, use the Text data type for this column.
-            Column('levelname', Text, nullable=False),
-            # To support custom logging levels, use the BigInteger data type for this column.
-            Column('levelno', BigInteger, nullable=False),
-            Column('lineno', Integer),
-            Column('message', Text, nullable=False),
-            Column('module_name', Text),
-            Column('msecs', SmallInteger, nullable=False),  # possible range: 0-999
-            Column('logger_name', Text, nullable=False),
-            Column('pathname', Text),
-            Column('process_id', BigInteger),
-            Column('process_name', Text),
-            Column('relative_created', BigInteger, nullable=False),
-            Column('stack_info', Text),
-            Column('thread_id', BigInteger),
-            Column('thread_name', Text),
+            Column(
+                'asctime',
+                DateTime,
+                nullable=False,
+                comment='Human-readable time when the LogRecord was created.'
+            ),
+            Column(
+                'created',
+                Numeric(17, 7),
+                nullable=False,
+                comment='Time when the LogRecord was created.'
+            ),
+            Column(
+                'exc_info',
+                Text,
+                comment='Exception information formatted as a string.'
+            ),
+            Column(
+                'filename',
+                Text,
+                comment='Filename portion of pathname.'
+            ),
+            Column(
+                'func_name',
+                Text,
+                comment='Name of function containing the logging call.'
+            ),
+            Column(
+                'levelname',
+                Text,  # To support custom logging levels, use Text type for this column.
+                nullable=False,
+                comment='Text logging level for the message.'
+            ),
+            Column(
+                'levelno',
+                BigInteger,  # To support custom logging levels, use BigInteger type for this column.
+                nullable=False,
+                comment='Numeric logging level for the message.'
+            ),
+            Column(
+                'lineno',
+                Integer,
+                comment='Source line number where the logging call was issued (if available).'
+            ),
+            Column(
+                'message',
+                Text,
+                nullable=False,
+                comment='The logged message.'
+            ),
+            Column(
+                'module_name',
+                Text,
+                comment='Module (name portion of filename).'
+            ),
+            Column(
+                'msecs',
+                SmallInteger,  # possible range: 0-999
+                nullable=False,
+                comment='Millisecond portion of the time when the LogRecord was created.'
+            ),
+            Column(
+                'logger_name',
+                Text,
+                nullable=False,
+                comment='Name of the logger used to log the call.'
+            ),
+            Column(
+                'pathname',
+                Text,
+                comment='Full pathname of the source file where the logging call was issued (if available).'
+            ),
+            Column(
+                'process_id',
+                BigInteger,
+                comment='Process ID (if available).'
+            ),
+            Column(
+                'process_name',
+                Text,
+                comment='Process name (if available).'
+            ),
+            Column(
+                'relative_created',
+                BigInteger,
+                nullable=False,
+                comment='Time in milliseconds when the LogRecord was created, '
+                        'relative to the time the logging module was loaded.'
+            ),
+            Column(
+                'stack_info',
+                Text,
+                comment='Stack frame information (where available) from the bottom of the stack in the current thread, '
+                        'up to and including the stack frame of the logging call '
+                        'which resulted in the creation of this record.'
+            ),
+            Column(
+                'thread_id',
+                BigInteger,
+                comment='Thread ID (if available).'
+            ),
+            Column(
+                'thread_name',
+                Text,
+                comment='Thread name (if available).'
+            ),
             schema=schema
         )
         table_exists = False
