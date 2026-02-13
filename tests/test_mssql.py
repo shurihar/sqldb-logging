@@ -2,14 +2,13 @@
 Microsoft SQL Server logging tests.
 """
 
-import logging
 import os
 
 from sqldb_logging.handlers import SQLHandler
 from .common_functions import run_logger
 
 
-def test_mssql():
+def test_mssql(buffer_size, flush_level):
     """
     Checks whether SQLHandler can write logs to Microsoft SQL Server.
 
@@ -25,8 +24,8 @@ def test_mssql():
         port=1433,
         database='master',
         schema='dbo',
-        buffer_size=10,
-        flush_level=logging.CRITICAL,
+        buffer_size=buffer_size,
+        flush_level=flush_level,
         connect_args={'driver': 'SQL Server'},
         echo=True,
         use_setinputsizes=False
