@@ -2,7 +2,7 @@
 An extension to the Python logging library that allows logging to SQL databases using [SQLAlchemy](https://www.sqlalchemy.org/)
 
 ## Requirements
-- Python version 3.11 or later
+- Python 3.11 or later
 
 ## Installation
 
@@ -47,8 +47,8 @@ its schema must reflect the structure of [LogRecord](https://docs.python.org/3/l
 
 ## Supported databases
 In theory, any database supported by SQLAlchemy should work. The following databases have been confirmed to work:
-- MySQL
-- PostgreSQL
-- SQLite
-- Databricks
-- Microsoft SQL Server
+- MySQL (using [mysqlclient](https://pypi.org/project/mysqlclient/))
+- PostgreSQL (using [psycopg](https://pypi.org/project/psycopg/))
+- SQLite (using the Python built-in module sqlite3)
+- Databricks (using [databricks-sqlalchemy](https://pypi.org/project/databricks-sqlalchemy/))
+- Microsoft SQL Server (using [pyodbc](https://pypi.org/project/pyodbc/))
